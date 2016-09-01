@@ -5,7 +5,7 @@ import csv
 
 
 def fetch_tribune_data():
-    articles_array = []
+    articles_list = []
 
     for x in range(1,4):
         url = ("https://www.texastribune.org/all/?page=%(x)s." % locals())
@@ -20,9 +20,9 @@ def fetch_tribune_data():
             img_url = article.contents[3].find('img').get('src')
             date = article.contents[1].find('time').get('datetime')
 
-            articles_array.append([url, date, author, title, img_url])
+            articles_list.append([url, date, author, title, img_url])
 
-    return articles_array
+    return articles_list
 
 def transform_data(data):
     for article in data:
@@ -47,6 +47,8 @@ def prepend_baseurl(url_type, url):
         return 'https://www.texastribune.org' + url
     elif url_type == 'image':
         return 'https:' + url
+    else:
+        return None
 
 
 def prepare_csv(data):
@@ -63,6 +65,8 @@ def generate_csv(data):
     with open('articles.csv', 'w', newline='') as fp:
         a = csv.writer(fp, delimiter=',')
         a.writerows(data)
+
+    print("CSV generated!")    
 
 
 data = fetch_tribune_data()
